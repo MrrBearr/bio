@@ -273,36 +273,63 @@ function animateBeatVisualizerWithData(frequencyData) {
     // Extrair cores dominantes do vídeo de fundo
     const dominantColors = extractDominantColors();
     
-    // Animar barras baseado na intensidade
+    // Animar barras baseado na intensidade - MAIS REATIVO
     beatBars.forEach((bar, index) => {
-        const intensity = frequencyData[index * 10] || average;
-        const height = Math.max(20, (intensity / 255) * 80);
+        const intensity = frequencyData[index * 8] || average;
+        const height = Math.max(20, (intensity / 255) * 120); // Aumentado de 80 para 120
         bar.style.height = height + 'px';
         
-        // Usar cores adaptativas baseadas no fundo
-        const color1 = dominantColors.primary;
-        const color2 = dominantColors.secondary;
-        
-        if (intensity > 150) {
-            bar.style.background = `linear-gradient(to top, ${color2}, ${color1})`;
-        } else {
-            bar.style.background = `linear-gradient(to top, ${color1}, ${color2})`;
+        // Cores brancas sempre
+        bar.style.background = `linear-gradient(to top, #ffffff, #cccccc)`;
+        bar.style.boxShadow = `0 0 ${intensity / 8}px rgba(255, 255, 255, 0.8)`;
+    });
+
+    // Efeito de pulsação MUITO MAIS INTENSO na foto de perfil
+    if (average > 50) { // Reduzido threshold
+        const scale = 1 + (average / 1500); // Mais sensível
+        const rotation = (average / 50) % 360; // Rotação baseada no beat
+        profileImg.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
+        profileImg.style.filter = `brightness(${1 + (average / 800)}) saturate(${1 + (average / 400)}) hue-rotate(${rotation}deg)`;
+    }
+
+    // Animar partículas MUITO MAIS baseado no beat
+    particles.forEach((particle, index) => {
+        const particleIntensity = frequencyData[index * 15] || average;
+        if (particleIntensity > 80) {
+            const size = 4 + (particleIntensity / 50);
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.boxShadow = `0 0 ${particleIntensity / 5}px #ffffff`;
+            particle.style.background = '#ffffff';
         }
     });
 
-    // Efeito de pulsação na foto de perfil
-    if (average > 100) {
-        profileImg.style.transform = `scale(${1 + (average / 2550)})`;
-        // Adicionar brilho adaptativo
-        profileImg.style.filter = `brightness(${1 + (average / 1000)}) saturate(${1 + (average / 500)})`;
+    // Fazer o NOME reagir à música
+    const username = document.querySelector('.username');
+    if (username && average > 100) {
+        const textScale = 1 + (average / 3000);
+        const textGlow = 5 + (average / 20);
+        username.style.transform = `scale(${textScale})`;
+        username.style.textShadow = `
+            0 0 ${textGlow}px #ffffff,
+            0 0 ${textGlow * 2}px #ffffff,
+            0 0 ${textGlow * 3}px #ffffff,
+            0 0 ${textGlow * 4}px #ffffff
+        `;
     }
 
-    // Animar partículas baseado no beat
-    if (average > 120) {
-        particles.forEach(particle => {
-            particle.style.boxShadow = `0 0 ${average / 10}px ${dominantColors.accent}`;
-            particle.style.background = dominantColors.accent;
-        });
+    // Fazer o ANEL da foto reagir MUITO MAIS
+    const profileRing = document.querySelector('.profile-ring');
+    if (profileRing && average > 80) {
+        const ringSpeed = Math.max(0.5, 3 - (average / 100)); // Velocidade baseada no beat
+        profileRing.style.animationDuration = ringSpeed + 's';
+        
+        const ringGlow = 20 + (average / 5);
+        profileRing.style.boxShadow = `
+            0 0 ${ringGlow}px rgba(255, 255, 255, 0.6),
+            0 0 ${ringGlow * 2}px rgba(0, 255, 255, 0.4),
+            inset 0 0 ${ringGlow}px rgba(255, 255, 255, 0.3)
+        `;
     }
 
     // Adaptar cores do texto baseado na intensidade
@@ -343,12 +370,13 @@ function createCustomCursor() {
         position: fixed;
         width: 20px;
         height: 20px;
-        background: radial-gradient(circle, #00ffff 0%, transparent 70%);
+        background: radial-gradient(circle, #ffffff 0%, transparent 70%);
         border-radius: 50%;
         pointer-events: none;
         z-index: 9999;
         mix-blend-mode: difference;
         transition: transform 0.1s ease;
+        box-shadow: 0 0 10px #ffffff;
     `;
     document.body.appendChild(cursor);
 }
