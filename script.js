@@ -5,18 +5,22 @@ let dataArray;
 let source;
 let isAudioPlaying = false;
 let beatDetection = false;
+let hasEnteredSite = false; // Prevenir múltiplos cliques
 
 // Elementos DOM
-const landing = document.getElementById('landing');
-const mainContent = document.getElementById('main-content');
-const audioToggle = document.getElementById('audio-toggle');
-const backgroundAudio = document.getElementById('background-audio');
-const beatBars = document.querySelectorAll('.beat-bar');
-const particles = document.querySelectorAll('.particle');
-const profileImg = document.getElementById('profile-img');
+let landing, mainContent, audioToggle, backgroundAudio, beatBars, particles, profileImg;
 
 // Inicialização quando a página carrega
 document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar elementos DOM
+    landing = document.getElementById('landing');
+    mainContent = document.getElementById('main-content');
+    audioToggle = document.getElementById('audio-toggle');
+    backgroundAudio = document.getElementById('background-audio');
+    beatBars = document.querySelectorAll('.beat-bar');
+    particles = document.querySelectorAll('.particle');
+    profileImg = document.getElementById('profile-img');
+    
     initializeApp();
     setupEventListeners();
     createCustomCursor();
@@ -80,6 +84,10 @@ function setupEventListeners() {
 
 // Entrar no site principal
 function enterSite() {
+    // Prevenir múltiplos cliques
+    if (hasEnteredSite) return;
+    hasEnteredSite = true;
+    
     landing.classList.add('fade-out');
     
     setTimeout(() => {
@@ -89,8 +97,40 @@ function enterSite() {
         setTimeout(() => {
             mainContent.classList.add('visible');
             startAnimations();
+            // Iniciar música automaticamente após entrar
+            setTimeout(() => {
+                startAutoAudio();
+            }, 500);
         }, 100);
     }, 1000);
+}
+
+// Iniciar áudio automaticamente
+async function startAutoAudio() {
+    try {
+        // Resumir contexto de áudio se necessário
+        if (audioContext && audioContext.state === 'suspended') {
+            await audioContext.resume();
+        }
+        
+        // Definir volume do áudio
+        backgroundAudio.volume = 0.4;
+        
+        // Tentar reproduzir áudio automaticamente
+        await backgroundAudio.play();
+        
+        console.log('Áudio iniciado automaticamente!');
+        audioToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+        audioToggle.classList.remove('muted');
+        isAudioPlaying = true;
+        
+    } catch (error) {
+        console.log('Autoplay bloqueado pelo navegador. Clique no botão de áudio para iniciar.');
+        // Manter o botão como muted para indicar que precisa ser clicado
+        audioToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        audioToggle.classList.add('muted');
+        isAudioPlaying = false;
+    }
 }
 
 // Configurar analisador de áudio
@@ -105,13 +145,25 @@ function setupAudioAnalyser() {
 
     // Conectar áudio ao analisador quando o áudio começar
     backgroundAudio.addEventListener('play', () => {
-        if (!source) {
-            source = audioContext.createMediaElementSource(backgroundAudio);
-            source.connect(analyser);
-            analyser.connect(audioContext.destination);
+        try {
+            if (!source) {
+                source = audioContext.createMediaElementSource(backgroundAudio);
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+            }
+            beatDetection = true;
+            animateBeatVisualizer();
+        } catch (error) {
+            console.log('Erro ao conectar analisador de áudio:', error);
+            // Usar fallback sintético
+            beatDetection = true;
+            animateSyntheticBeat();
         }
-        beatDetection = true;
-        animateBeatVisualizer();
+    });
+
+    // Também conectar no evento canplay para garantir
+    backgroundAudio.addEventListener('canplay', () => {
+        console.log('Áudio pronto para reproduzir');
     });
 }
 
