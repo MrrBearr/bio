@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alexandre - Biografia</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landing" class="landing-page">
+        <div class="landing-content">
+            <div class="glitch-text">click to enter...</div>
+            <div class="particles"></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="main-content hidden">
+        <!-- Background Video -->
+        <div class="video-background">
+            <video id="bg-video" autoplay muted loop>
+                <source src="assets/background-video.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+
+        <!-- Audio Controls -->
+        <div class="audio-controls">
+            <button id="audio-toggle" class="audio-btn">
+                <i class="fas fa-volume-up"></i>
+            </button>
+        </div>
+
+        <!-- Main Profile Section -->
+        <div class="profile-container">
+            <!-- Profile Picture -->
+            <div class="profile-picture">
+                <div class="profile-ring">
+                    <img src="assets/profile.jpg" alt="Alexandre" id="profile-img">
+                </div>
+                <div class="pulse-ring"></div>
+            </div>
+
+            <!-- Username -->
+            <div class="username-container">
+                <h1 class="username glowing-text">Alexandre</h1>
+                <div class="subtitle">Developer & Creator</div>
+            </div>
+
+            <!-- Social Links -->
+            <div class="social-links">
+                <a href="#" class="social-link discord" data-tooltip="Discord">
+                    <i class="fab fa-discord"></i>
+                </a>
+                <a href="#" class="social-link github" data-tooltip="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="#" class="social-link steam" data-tooltip="Steam">
+                    <i class="fab fa-steam"></i>
+                </a>
+                <a href="#" class="social-link twitter" data-tooltip="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="social-link instagram" data-tooltip="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+
+            <!-- Bio Text -->
+            <div class="bio-text">
+                <p class="typing-text">Desenvolvedor apaixonado por tecnologia e criação digital</p>
+            </div>
+        </div>
+
+        <!-- Beat Visualization -->
+        <div class="beat-visualizer">
+            <div class="beat-bar"></div>
+            <div class="beat-bar"></div>
+            <div class="beat-bar"></div>
+            <div class="beat-bar"></div>
+            <div class="beat-bar"></div>
+        </div>
+
+        <!-- Floating Particles -->
+        <div class="floating-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="background-audio" loop>
+        <source src="assets/background-music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
